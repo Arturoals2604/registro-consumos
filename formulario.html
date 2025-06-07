@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro de Consumo</title>
+</head>
+<body>
+  <h2>Registrar Consumo</h2>
+  <form id="consumoForm">
+    <input type="text" name="fecha" placeholder="Fecha (YYYY-MM-DD)" required /><br />
+    <input type="text" name="quien" placeholder="Quién" required /><br />
+    <input type="number" step="0.01" name="monto" placeholder="Monto" required /><br />
+    <input type="text" name="categoria" placeholder="Categoría" required /><br />
+    <input type="text" name="subcategoria" placeholder="Subcategoría" /><br />
+    <input type="text" name="comentario" placeholder="Comentario" /><br />
+    <button type="submit">Enviar</button>
+  </form>
+
+  <p id="respuesta"></p>
+
+  <script>
+    const form = document.getElementById('consumoForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const datos = Object.fromEntries(new FormData(form).entries());
+
+      const response = await fetch('http://localhost:3000/api/consumos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos),
+      });
+
+      const resultado = await response.json();
+      document.getElementById('respuesta').innerText = JSON.stringify(resultado);
+    });
+  </script>
+</body>
+</html>
+
+<script>
+    document.getElementById('formulario').addEventListener('submit', async function (e) {
+      e.preventDefault();
+    
+      const data = {
+        fecha: document.getElementById('fecha').value,
+        quien: document.getElementById('quien').value,
+        monto: parseFloat(document.getElementById('monto').value),
+        categoria: document.getElementById('categoria').value,
+        subcategoria: document.getElementById('subcategoria').value,
+        comentario: document.getElementById('comentario').value
+      };
+    
+      try {
+        const respuesta = await fetch('http://localhost:3000/api/consumos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+    
+        if (!respuesta.ok) throw new Error('Error al enviar los datos');
+    
+        const resultado = await respuesta.json();
+        alert('✅ Registro exitoso: ' + resultado.mensaje);
+      } catch (error) {
+        console.error('❌ Error al enviar:', error);
+        alert('❌ Error al registrar el consumo');
+      }
+    });
+    </script>
+    
